@@ -5,6 +5,7 @@
 // * key generation
 // * key export / import
 // * encryption / decryption
+// * use random values as iv
 //
 // Hint: Internet Explorer 11 supports the webcrypto-api but has a non-standard promises implementation,
 // therefore you have to change the code to work in IE 11 or use a proper polyfill.
@@ -19,9 +20,10 @@ var encoder = new TextEncoder("utf-8");
 
 var cryptoSubtle = window.crypto.subtle;
 
-// static iv for demonstration purposes only
-var iv = new Uint8Array([0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-                        0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F]);
+// get random iv
+var iv = window.crypto.getRandomValues(new Uint8Array(16));
+console.log("using a random iv:", iv);
+
 var algorithm = {name: 'AES-CBC', length: 128, iv: iv};
 var extractable = true;
 var usages = ["encrypt", "decrypt"];
