@@ -36,7 +36,7 @@ cryptoSubtle.generateKey(algorithm, extractable, usages)
   cryptoSubtle.exportKey("raw", key)
   .then(function(exportedKey) {
 
-    console.log("exported raw key: ", new Int8Array(exportedKey));
+    console.log("exported raw key: ", new Uint8Array(exportedKey));
 
     // start encryption with generated key
 
