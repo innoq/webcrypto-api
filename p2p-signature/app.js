@@ -15,29 +15,29 @@ demo.server = "ws://localhost:20500";
 
 demo.connect = function(server) {
 
-  demo.out.serverlog("connecting to " + server + " ...");
-  demo.socketNode = P.create().connect(server);
+	demo.out.serverlog("connecting to " + server + " ...");
+	demo.socketNode = P.create().connect(server);
 
-  demo.socketNode.on('open', function() {
+	demo.socketNode.on('open', function() {
 		demo.out.serverlog("connection ready")
 		alertify.success("Connected to "+server);
 	});
-  demo.socketNode.on('close', function() {
+	demo.socketNode.on('close', function() {
 		demo.out.serverlog("connection closed")
 		alertify.success("Connection to "+server + " closed");
 	});
-  demo.socketNode.on('error', function() {
+	demo.socketNode.on('error', function() {
 		demo.out.serverlog("connection error (" + server + ")")
 		alertify.error("connection error: "+ server);
 	});
 	demo.socketNode.on('message', function(msg) {demo.out.serverlog("got message: " + msg)});
 
 	demo.socketNode.on('connection', function(peer) {
-			demo.out.p2plog("got connection from "+peer.address);
-			alertify.success("got connection from "+peer.address);
+		demo.out.p2plog("got connection from "+peer.address);
+		alertify.success("got connection from "+peer.address);
 
-			demo.peer = peer;
-			peer.on('message', demo.handleMessage);
+		demo.peer = peer;
+		peer.on('message', demo.handleMessage);
 	});
 };
 
@@ -46,8 +46,8 @@ demo.connectPeer = function(peer) {
 	demo.peer = demo.socketNode.connect(peer);
 
 	demo.peer.on('open', function() {demo.out.p2plog("P2P connection ready")});
-  demo.peer.on('close', function() {demo.out.p2plog("P2P connection closed")});
-  demo.peer.on('error', function() {demo.out.p2plog("P2P connection error")});
+	demo.peer.on('close', function() {demo.out.p2plog("P2P connection closed")});
+	demo.peer.on('error', function() {demo.out.p2plog("P2P connection error")});
 };
 
 demo.generateKey = function() {
@@ -69,10 +69,10 @@ demo.generateKey = function() {
 demo.storeKey = function (keypair) {
 
 	demo.keypair = keypair;
-  	demo.crypto.subtle.exportKey('jwk',keypair.publicKey)
-  	.then(function(key) {
-			jQuery("#jwk-public-key").text(JSON.stringify(key));
-  	}).catch(function (error) {console.log(error); alertify.error(error);});
+	demo.crypto.subtle.exportKey('jwk',keypair.publicKey)
+	.then(function(key) {
+		jQuery("#jwk-public-key").text(JSON.stringify(key));
+	}).catch(function (error) {console.log(error); alertify.error(error);});
 };
 
 demo.clearKey = function () {
@@ -129,7 +129,7 @@ demo.out.p2plogIn = function(msg, valid) {
 };
 demo.out.p2plogOut = function(msg) {
 	console.log("[p2p-log] ->", msg);
-  jQuery("#p2p-log").append("<p class='out'>"+msg+"</p>");
+	jQuery("#p2p-log").append("<p class='out'>"+msg+"</p>");
 	demo.out.scroll("#p2p-log");
 };
 demo.out.scroll = function(e) {
@@ -202,9 +202,9 @@ demo.init = function() {
 	demo.crypto.subtle = window.crypto.subtle;
 	var hashAlgorithm = {name: 'SHA-1'};
 	demo.crypto.algorithm = {name: 'RSASSA-PKCS1-v1_5', 
-									hash: hashAlgorithm, 
-									modulusLength: 1024, 
-									publicExponent: new Uint8Array([1,0,1])};
+		hash: hashAlgorithm, 
+		modulusLength: 1024, 
+		publicExponent: new Uint8Array([1,0,1])};
 	demo.encoder = new TextEncoder("utf-8");
 	demo.ui_init();
 };
@@ -213,14 +213,14 @@ demo.ui_init = function() {
 
 	jQuery("#onramp-server").val(demo.server);
 
-  jQuery("#connect-server").click(function() {
-	demo.server = jQuery("#onramp-server").val();
-    demo.connect(demo.server);
-  });
+	jQuery("#connect-server").click(function() {
+		demo.server = jQuery("#onramp-server").val();
+    	demo.connect(demo.server);
+	});
 
-  jQuery("#clear-server").click(function() {
-    jQuery("#server-log").val("");
-  });
+	jQuery("#clear-server").click(function() {
+		jQuery("#server-log").val("");
+  	});
 	
 	jQuery("#mitm").click(function() {
 		if(demo.doMITM) {
@@ -272,7 +272,7 @@ demo.ui_init = function() {
 // ugly array conversion hack with jquery
 demo.toTypedArray = function(obj) {
 	var array = $.map(obj, function(value, index) {
-    return [value];
+		return [value];
 	});
 
 	return new Uint8Array(array);
