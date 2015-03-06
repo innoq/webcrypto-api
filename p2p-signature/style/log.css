@@ -1,0 +1,30 @@
+#p2p-log {
+	border: 1px solid lightgrey;
+	background-color: #eee;
+	overflow-y: scroll;
+	height: 8em;
+	padding: 5px;
+}
+
+.out::before {
+	content: '\2192'; 
+	font-size:+1em; 
+	padding:0.4em;
+}
+.in::before {
+	content: '\2190'; 
+	font-size:+1em; 
+	padding:0.4em;
+}
+.valid::after {
+	content: '\A           \2714  valid';
+	white-space: pre;
+	font-style: italic;
+	color: green;
+}
+.invalid::after {
+	content: '\A           \2716  invalid';
+	white-space: pre;
+	font-style: italic;
+	color: red;
+}
