@@ -112,6 +112,7 @@ demo.storeKeypair = function (keypair) {
 demo.storeEncryptionKey = function (key) {
 
 	demo.encryptionKey = key;
+	console.log("generated encryption key: " + keypair)
 	
 	demo.crypto.subtle.exportKey('jwk', key)
 	.then(function(exportedKey) {
@@ -184,7 +185,7 @@ demo.importDecryptionkey = function(jwkJson) {
 };
 
 demo.MITM = function(message) {
-	return message.replace(/a/ig, 'b');
+	return message.replace(/a/ig, 'e');
 };
 
 demo.sendMessage = function(msg) {
@@ -194,23 +195,25 @@ demo.sendMessage = function(msg) {
 		demo.out.p2plogOut(msg);
 	}
 
-        demo.createMessage(msg, demo.encryptionKey, demo.keypair, sendFn);
+        demo.packAndSendMessage(msg, demo.encryptionKey, demo.keypair, sendFn);
 };
 
-demo.createMessage = function(msg, key, keypair, sendFn) {
+demo.packAndSendMessage = function(msg, key, keypair, sendFn) {
 
 	var messageObject = {'message' : msg, 'signature' : null};
 
+	var msgBuffer = demo.encoder.encode(msg);
+
 	if (demo.shouldEncrypt) {
-		demo.crypto.subtle.encrypt(demo.crypto.keyAlgorithm, key, demo.encoder.encode(msg))
+		demo.crypto.subtle.encrypt(demo.crypto.keyAlgorithm, key, msgBuffer)
 		.then(function(ciphertextData) {
 			var ciphertext = base64js.fromByteArray(new Uint8Array(ciphertextData));
 			messageObject.message = ciphertext;
 			if (demo.shouldSign) {
-				demo.crypto.subtle.sign(demo.crypto.keypairAlgorithm, keypair.privateKey, demo.encoder.encode(msg))
+				demo.crypto.subtle.sign(demo.crypto.keypairAlgorithm, keypair.privateKey, msgBuffer)
 				.then(function(signature) {
-					var sig = base64js.fromByteArray(new Uint8Array(signature));
-					messageObject.signature = sig;
+					var signatureB64enc = base64js.fromByteArray(new Uint8Array(signature));
+					messageObject.signature = signatureB64enc;
 					sendFn(messageObject)
 				}).catch(function(error) {
 					console.log(error);
@@ -222,10 +225,10 @@ demo.createMessage = function(msg, key, keypair, sendFn) {
 
 		})
 	} else if (demo.shouldSign) {
-		demo.crypto.subtle.sign(demo.crypto.keypairAlgorithm, keypair.privateKey, demo.encoder.encode(msg))
+		demo.crypto.subtle.sign(demo.crypto.keypairAlgorithm, keypair.privateKey, msgBuffer)
 		.then(function(signature) {
-			var sig = base64js.fromByteArray(new Uint8Array(signature));
-			messageObject.signature = sig;
+			var signatureB64enc = base64js.fromByteArray(new Uint8Array(signature));
+			messageObject.signature = signatureB64enc;
 			sendFn(messageObject)
 		}).catch(function(error) {
 			console.log(error);
@@ -239,9 +242,9 @@ demo.createMessage = function(msg, key, keypair, sendFn) {
 demo.handleMessage = function(messageObject) {
 
 	if(demo.doMITM) {
-		console.log(messageObject.message);
+		console.log("Original message: " + messageObject.message);
 		messageObject.message = demo.MITM(messageObject.message);
-		console.log(messageObject.message);
+		console.log("Tampered message" + messageObject.message);
 	}
 
 	var logMessage = function(msg, valid) {
@@ -249,7 +252,9 @@ demo.handleMessage = function(messageObject) {
 	}
 
 	if (demo.shouldDecrypt) {
+
 		var ciphertextBuffer;
+
 		try {
 			ciphertextBuffer = base64js.toByteArray(messageObject.message);
 		} catch (e) {
@@ -283,7 +288,6 @@ demo.verify = function(msg, logMessage) {
 		logMessage(msg, false);
 		return;
 	}
-
 
 	var msgBuffer = demo.encoder.encode(msg.message);
  	var sigBuffer = base64js.toByteArray(msg.signature);
@@ -382,7 +386,7 @@ demo.ui_init = function() {
 			demo.shouldSign = false;
 			jQuery("#sign").text("Activate message signing");
 			jQuery("#sign").removeClass("btn-danger");
-			alertify.success("Message Signing has stopped");
+			alertify.success("Message Signing deactivated");
 		} else {
 			if (demo.keypair != null) {
 				demo.shouldSign = true;
@@ -400,7 +404,7 @@ demo.ui_init = function() {
 			demo.shouldVerify = false;
 			jQuery("#verify").text("Activate signature verification");
 			jQuery("#verify").removeClass("btn-danger");
-			alertify.success("Signature verification has stopped");
+			alertify.success("Signature verification deactivated");
 		} else {
 			if (demo.verificationKey != null) {
 				demo.shouldVerify = true;
@@ -418,7 +422,7 @@ demo.ui_init = function() {
 			demo.shouldEncrypt = false;
 			jQuery("#encrypt").text("Activate encryption");
 			jQuery("#encrypt").removeClass("btn-danger");
-			alertify.success("Encryption has stopped");
+			alertify.success("Encryption deactivated");
 		} else {
 			if (demo.encryptionKey != null) {
 				demo.shouldEncrypt = true;
@@ -436,7 +440,7 @@ demo.ui_init = function() {
 			demo.shouldDecrypt = false;
 			jQuery("#decrypt").text("Activate decryption");
 			jQuery("#decrypt").removeClass("btn-danger");
-			alertify.success("Decryption has stopped");
+			alertify.success("Decryption deactivated");
 		} else {
 			if (demo.decryptionKey != null) {
 				demo.shouldDecrypt = true;
