@@ -3,6 +3,7 @@
 <head>
 	<script src="lib/p.js"></script>
 	<script src="lib/jquery-2.1.3.min.js"></script>
+	<script src="lib/b64.js"></script>
 	<script src="lib/alertify.js/js/alertify.js"></script>
 	<link rel="stylesheet" href="lib/alertify.js/css/alertify-bootstrap-3.css">
 	<link rel="stylesheet" href="style/bootstrap-3.3.2.min.css">
@@ -22,17 +23,24 @@
 		<li><a href="http://jquery.com/">jQuery</a> (for the nasty stuff)</li></ul>
 	<p>For an initial conversation you will need a running <a href="https://github.com/oztu/onramp">onramp server</a>. This is a lightweight P implementation in node.js and can be installed via npm.</p>
 
-	<h2>MITM</h2>
-		<button id="mitm" class="btn btn-default">Activate MITM on this client</button>
+	<h2>Options</h2>
+	        <button id="mitm" class="btn btn-default">Activate MITM</button>
+	        <button id="sign" class="btn btn-default">Activate message signing</button>
+	        <button id="verify" class="btn btn-default">Activate signature verification</button>
+	        <button id="encrypt" class="btn btn-default">Activate encryption</button>
+		<button id="decrypt" class="btn btn-default">Activate decryption</button>
 
 	<h2>Key Generation</h2>
-		<button id="generateKey" class="btn btn-default">Generate Key</button>
-		<button id="clearKey" class="btn btn-default">Clear Key</button>
-		<pre id="jwk-public-key">no key generated</pre>
+		<button id="generateKeypair" class="btn btn-default">Generate Keypair</button>
+		<button id="generateEncryptionKey" class="btn btn-default">Generate encryption Key</button>
+		<button id="clearKeys" class="btn btn-default">Clear Keys</button>
+		<pre id="jwk-public-key">no public key generated</pre>
+		<pre id="jwk-crypto-key">no crypto key generated</pre>
 
 	<h2>Peer Key Import</h2>
 		<textarea class="form-control" id="peer-jwk" placeholder="JWK of your peer"></textarea>
-		<button id="importKey" class="btn btn-default">Import Key</button>
+		<button id="importPublicKey" class="btn btn-default">Import public key</button>
+		<button id="importDecryptionKey" class="btn btn-default">Import decryption key</button>
 
 	<h2>Websocket Server Communication</h2>
 		<button id="connect-server" class="btn btn-default">connect to server</button>

@@ -28,3 +28,11 @@
 	font-style: italic;
 	color: red;
 }
+.signature {
+    	font-size: 70%; 
+        font-style: italic;
+}
+.signature::before {
+    content: '           Signature: ';
+    white-space:  pre;
+}
