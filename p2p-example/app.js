@@ -112,7 +112,7 @@ demo.storeKeypair = function (keypair) {
 demo.storeEncryptionKey = function (key) {
 
 	demo.encryptionKey = key;
-	console.log("generated encryption key: " + keypair)
+	console.log("generated encryption key: " + key)
 	
 	demo.crypto.subtle.exportKey('jwk', key)
 	.then(function(exportedKey) {
